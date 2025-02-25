@@ -1,0 +1,43 @@
+
+**1. Admin Email Template (New Secret Club Membership)**
+
+**Subject:** New Secret Club Membership - [User Name]  
+
+**Body:**
+
+Dear Admin,
+
+A new user has successfully become a **Secret Club Member**.
+
+Here are the details of the new member:  
+- **Name**: [ Name]  
+- **Email**: [ Email]  
+- **Phone Number**: [Phone Number]  
+
+Please update the system as required, and feel free to reach out if you need further information.
+
+Best regards,  
+[Your Company Name]  
+[Your Company Contact Information]  
+
+
+**2. User Email Template (Successful Membership Confirmation)**
+
+**Subject:** Welcome to the Secret Club!
+
+**Body:**
+
+Dear [User Name],
+
+Congratulations! You are now officially a **Secret Club Member**. 🎉  
+
+As a valued member, you can now create exclusive **Promotion Codes** and enjoy special benefits from our Store.  
+
+We look forward to providing you with the best experiences and rewards.
+
+If you have any questions or need assistance, don't hesitate to contact us.
+
+Best regards,  
+[Your Company Name]  
+[Your Company Contact Information]  
+
