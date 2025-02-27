@@ -13,7 +13,7 @@ exports.createReport = async (req, res) => {
 
     try {
         const { fullname, number, subject, message, email } = req.body;
-        const newReport = new Report({ fullame, number, subject, message, email });
+        const newReport = new Report({ fullname, number, subject, message, email });
         const savedReport = await newReport.save();
 
         // Send email notifications
