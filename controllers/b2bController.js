@@ -12,12 +12,12 @@ exports.createContact = async (req, res) => {
     }
 
     try {
-        const { name, phone, subject, message } = req.body;
-        const newContact = new Contact({ name,  phone, subject, message });
+        const { name, number, subject, message } = req.body;
+        const newContact = new Contact({ name,  number, subject, message });
         const savedContact = await newContact.save();
 
         // Send email notification
-        await sendEmailNotification({ name, phone, subject, message });
+        await sendEmailNotification({ name, number, subject, message });
 
         res.status(201).json({ message: "Inquiry submitted successfully", savedContact });
     } catch (error) {
