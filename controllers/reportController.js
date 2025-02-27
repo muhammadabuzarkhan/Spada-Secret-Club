@@ -13,12 +13,12 @@ exports.createReport = async (req, res) => {
 
     try {
         const { name, number, subject, message, email } = req.body;
-        const newReport = new Report({ name, number, subject, message, email });
+        const newReport = new Report({ fullame, number, subject, message, email });
         const savedReport = await newReport.save();
 
         // Send email notifications
-        await sendAdminNotification({ name, number, subject, message, email });
-        await sendUserConfirmation({ name, email });
+        await sendAdminNotification({ fullname, number, subject, message, email });
+        await sendUserConfirmation({ fullname, email });
 
         res.status(201).json({ message: "Report submitted successfully", savedReport });
     } catch (error) {
