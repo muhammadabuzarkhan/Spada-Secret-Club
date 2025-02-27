@@ -12,8 +12,8 @@ exports.createContact = async (req, res) => {
     }
 
     try {
-        const { name, email, phone, subject, message } = req.body;
-        const newContact = new Contact({ name, email, phone, subject, message });
+        const { name, phone, subject, message } = req.body;
+        const newContact = new Contact({ name,  phone, subject, message });
         const savedContact = await newContact.save();
 
         // Send email notification
