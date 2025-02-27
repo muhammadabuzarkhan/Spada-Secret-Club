@@ -3,7 +3,6 @@ const mailchimp = require("@mailchimp/mailchimp_transactional");
 const { validationResult } = require("express-validator");
 require("dotenv").config();
 
-// Create a new form entry and send email notifications
 exports.createForm = async (req, res) => {
     // Validate input
     const errors = validationResult(req);
@@ -13,6 +12,14 @@ exports.createForm = async (req, res) => {
 
     try {
         const { name, email, phone } = req.body;
+
+        // Check if the email already exists in the database
+        const existingForm = await Form.findOne({ email });
+        if (existingForm) {
+            return res.status(400).json({ message: "You are already a Secret Club member." });
+        }
+
+        // Create new membership
         const newForm = new Form({ name, email, phone });
         const savedForm = await newForm.save();
 
@@ -25,6 +32,7 @@ exports.createForm = async (req, res) => {
         res.status(500).json({ message: "Error saving form", error });
     }
 };
+
 
 // Get a single form by ID
 exports.getFormById = async (req, res) => {

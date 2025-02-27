@@ -40,7 +40,12 @@ exports.createPromoCode = async (req, res) => {
 // Get a promo code by email
 exports.getPromoCodeByEmail = async (req, res) => {
     try {
-        const { email } = req.params;
+        const { email } = req.body; // Get email from request body
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
         const promo = await PromoCode.findOne({ email });
 
         if (!promo) {
@@ -53,6 +58,7 @@ exports.getPromoCodeByEmail = async (req, res) => {
     }
 };
 
+
 // Get all promo codes
 exports.getAllPromoCodes = async (req, res) => {
     try {
@@ -63,7 +69,6 @@ exports.getAllPromoCodes = async (req, res) => {
     }
 };
 
-// Increase promo code usage count and send email when thresholds are crossed
 exports.incrementUsage = async (req, res) => {
     try {
         const { code } = req.params;
@@ -73,29 +78,40 @@ exports.incrementUsage = async (req, res) => {
             return res.status(400).json({ message: "Invalid increment value" });
         }
 
-        // Find the promo code and update its usage count
-        const promo = await PromoCode.findOneAndUpdate(
-            { code },
+
+        // Check if the promo code exists before updating
+        const existingPromo = await PromoCode.findOne({ code: { $regex: new RegExp(`^${code}$`, "i") } });
+
+        if (!existingPromo) {
+            return res.status(404).json({ message: "Promo code not found in DB" });
+        }
+
+        // Update the promo code usage count
+        const updatedPromo = await PromoCode.findOneAndUpdate(
+            { code: { $regex: new RegExp(`^${code}$`, "i") } },
             { $inc: { usageCount: incrementBy } },
             { new: true }
         );
 
-        if (!promo) {
-            return res.status(404).json({ message: "Promo code not found" });
+        if (!updatedPromo) {
+            return res.status(500).json({ message: "Error updating promo code usage" });
         }
+
 
         // Check if the usage count has reached certain thresholds
         const thresholds = [100, 500, 1000, 1500, 2000, 3000, 5000, 10000];
-        if (thresholds.includes(promo.usageCount)) {
-            await sendUsageNotificationToUser(promo);
-            await sendUsageNotificationToAdmin(promo);
+        if (thresholds.includes(updatedPromo.usageCount)) {
+            await sendUsageNotificationToUser(updatedPromo);
+            await sendUsageNotificationToAdmin(updatedPromo);
         }
 
-        res.json({ message: "Promo code usage updated", promo });
+        res.json({ message: "Promo code usage updated", promo: updatedPromo });
     } catch (error) {
+        console.error("Error in incrementUsage:", error);
         res.status(500).json({ message: "Error updating promo code", error });
     }
 };
+
 
 // Send email to user when a certain threshold is reached
 async function sendUsageNotificationToUser(promo) {
